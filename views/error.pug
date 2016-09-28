@@ -1,0 +1,21 @@
+doctype html
+
+block vars
+
+- var page = pageClass || ''
+- var title = pageTitle || ''
+
+html(lang="en")
+  head
+  body: main
+    h1= err.status
+    h2= err.message
+    if err.status >= 500
+      hr
+      details
+        summary stacktrace
+        div
+          if Array.isArray(err.stacktrace)
+            pre= err.stacktrace.join('\n')
+          else
+            pre= err.stacktrace
