@@ -1,13 +1,12 @@
 {
   "name": "dumb-account",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Hiswe",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -19,5 +18,15 @@
     "pug": "^2.0.0-beta6",
     "rc": "^1.1.6",
     "serve-favicon": "^2.3.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hiswe/dumb-account.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hiswe/dumb-account/issues"
+  },
+  "homepage": "https://github.com/Hiswe/dumb-account#readme",
+  "description": ""
 }
