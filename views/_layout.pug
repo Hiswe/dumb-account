@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+  head
+    title ConCompte
+    meta(http-equiv="Content-Language", content="en")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    //- Mobile
+    meta(name="viewport", content="initial-scale=1")
+    meta(name="apple-mobile-web-app-capable",content="yes")
+
+    //- link(rel='stylesheet', href="/concompte.css")
+    //- link(rel='icon', href='/favicon.png', type='image/png')
+
+  body
+    #react-main-mount
+      | !{dom}
+    //- if initialState
+    //-   script.
+    //-     window.__INITIAL_STATE__ = !{JSON.stringify(initialState)}
+
+    //- script(src="/concompte-lib.js")
+    //- script(src="/concompte.js")

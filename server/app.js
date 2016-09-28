@@ -8,10 +8,16 @@ import morgan from 'morgan'
 import favicon from 'serve-favicon'
 import createError from 'http-errors'
 
-// import React                from 'react'
-// import { renderToString }   from 'react-dom/server'
+import React from 'react'
+import { renderToString } from 'react-dom/server'
+import { RouterContext, match } from 'react-router'
+// Redux
+import { createStore }      from 'redux'
+import { Provider }         from 'react-redux'
 
 import config from './config'
+import reactRoutes from '../shared/react-routes'
+// import reactRoutingMiddleware from './react-routing-middleware'
 
 export default () => {
 
@@ -69,11 +75,43 @@ export default () => {
   // ROUTING
   //////
 
+  app.use(function reactRoutingMiddleware(req, res, next) {
+    // In case of async operations (like DB queries)
+    Promise.resolve({datas: {}})
+    .then(mapReactRoutingToExpress)
+    .catch(next)
 
-  // import React                from 'react'
-  // import { renderToString }   from 'react-dom/server'
+    function mapReactRoutingToExpress(initialState) {
 
-  app.get('/', (req, res, next) => res.send('home'))
+      const store = createStore(function reducer(state) {
+        return state
+      }, initialState)
+
+      // Make the mapping from react routing to express
+      match({
+        routes:   reactRoutes(store),
+        location: req.url,
+      }, reactMatchRoute)
+
+      function reactMatchRoute(error, redirectLocation, renderProps) {
+        if (error) return next(err)
+        if (redirectLocation) {
+          return res.redirect(redirectLocation.pathname + redirectLocation.search)
+        }
+        if (!renderProps) return next()
+        // use jade to render all wrapping markup
+        return res.render('_layout', {
+          dom: renderToString(
+            <Provider store={store}>
+              <RouterContext {...renderProps} />
+            </Provider>
+          ),
+          // send initial state for front app initialization
+          initialState: initialState,
+        })
+      }
+    }
+  })
 
   //////
   // ERROR HANDLING
