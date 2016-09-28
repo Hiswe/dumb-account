@@ -2,7 +2,7 @@
 
 ## Prerequisite
 
-- [NodeJS 5](https://nodejs.org/en/)
+- [NodeJS 6](https://nodejs.org/en/)
 
 After each updates, don't forget to do a `npm install`
 
