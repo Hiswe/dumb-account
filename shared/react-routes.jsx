@@ -4,6 +4,8 @@ import { Route, IndexRoute, Redirect } from 'react-router'
 import Layout         from '../views/_layout.jsx'
 import Home           from '../views/home.jsx'
 
+import QuotationHome  from '../views/quotations-home.jsx'
+
 import _404           from '../views/404.jsx'
 
 // wrap in a function for router to have access the state
@@ -23,6 +25,8 @@ export default function provideRouter(store) {
   return (
     <Route path="/" component={Layout}>
       <IndexRoute component={Home} />
+
+      <Route path="quotations" component={QuotationHome} />
 
       <Route path="404" component={_404} />
       <Route path="*" component={_404} />

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-
 // Need a React class for the wrapper
 var Layout = React.createClass({
   // React.cloneElement is needed to pass additional datas to childrens
@@ -13,6 +12,7 @@ var Layout = React.createClass({
         <header className="main-header">
           <ul>
             <li><Link to="/">home</Link></li>
+            <li><Link to="/quotations">quotations</Link></li>
           </ul>
         </header>
         <main role="main">
