@@ -104,11 +104,20 @@ export default () => {
 
   app.use(function reactRoutingMiddleware(req, res, next) {
 
-    const store = createStore(reducers, applyMiddleware(
-      createLogger({
-        colors: false,
-      }),
-    ))
+    const client = axios.create({
+      baseURL:      `${req.protocol}://${config.host}/api/v1`,
+      responseType: 'json'
+    })
+
+    // Add a middleware to Redux to avoid doing manual async functions
+    // This use middleware promises :)
+    // https://github.com/svrcekmichal/redux-axios-middleware#use-middleware
+    const middleware  = [
+      axiosMiddleware(client),
+      createLogger({ colors: false, }),
+    ]
+
+    const store       = createStore(reducers, applyMiddleware(...middleware) )
 
     // Map routing from express to react
     match({
@@ -123,19 +132,15 @@ export default () => {
       }
       if (!renderProps) return next()
 
-      // console.log(util.inspect(renderProps))
-
       // fetch datas from components
       fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
       .then(renderView)
-      // .then(html => res.end(html))
-      // .catch(err => res.end(err.message));
-    // }
+      .catch(next)
 
-      // renderView(store, renderProps)
       function renderView() {
-
-        const initialState = store.getState();
+        // Redux store should be up date to that at this time
+        // we can safely get current sate
+        const initialState = store.getState()
         // use jade to render all wrapping markup
         return res.render('_layout', {
           dom: renderToString(

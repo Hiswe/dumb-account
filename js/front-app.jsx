@@ -2,28 +2,33 @@ import React          from 'react'
 import { render }     from 'react-dom'
 import {
   Router,
-  browserHistory
+  browserHistory,
 }                     from 'react-router'
 
 import {
   createStore,
-  applyMiddleware
+  applyMiddleware,
+  compose,
 }                     from 'redux'
 import { Provider }   from 'react-redux'
-// import createLogger   from 'redux-logger'
-// import reducer        from '../shared/redux-reducers'
+import createLogger   from 'redux-logger'
+import reducer        from '../shared/reducers'
 
 import routes         from '../shared/react-routes.jsx'
 
 const $root             = document.querySelector('#react-main-mount')
 const initialState      = window.__INITIAL_STATE__ || {}
 // const loggerMiddleware  = createLogger()
-const store             = createStore(function reducer(state) {
-        return state
-      }, initialState)
-// const store             = createStore(reducer, initialState, applyMiddleware(loggerMiddleware))
+const middleware        = [
+  createLogger(),
+]
 
-// console.log(initialState)
+// emable redux-devtools-extension when installed on chrome
+// https://github.com/zalmoxisus/redux-devtools-extension#12-advanced-store-setup
+const store             = createStore(reducer, initialState, compose(
+  applyMiddleware(...middleware),
+  window.devToolsExtension ? window.devToolsExtension() : f => f,
+))
 
 render((
   <Provider store={store}>
