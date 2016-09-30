@@ -4,7 +4,6 @@ import {
   Router,
   browserHistory,
 }                     from 'react-router'
-
 import {
   createStore,
   applyMiddleware,
@@ -12,8 +11,8 @@ import {
 }                     from 'redux'
 import { Provider }   from 'react-redux'
 import createLogger   from 'redux-logger'
-import reducer        from '../shared/reducers'
 
+import reducer        from '../shared/reducers'
 import routes         from '../shared/react-routes.jsx'
 
 const $root             = document.querySelector('#react-main-mount')
