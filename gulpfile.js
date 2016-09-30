@@ -77,7 +77,7 @@ function jsApp() {
     packageCache: {},
     debug:        isDev,
     extensions:   ['.js', '.jsx'],
-    entries:      ['./js/front-app.jsx']
+    entries:      ['./client/front-app.jsx']
   })
   .external(npmLibs)
   .transform(babelify, {
