@@ -12,15 +12,20 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { RouterContext, match } from 'react-router'
 // Redux
-import { createStore }      from 'redux'
-import { Provider }         from 'react-redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import createLogger from 'redux-logger'
+import axios from 'axios'
+import axiosMiddleware from 'redux-axios-middleware'
 
 import config from './config'
 import reactRoutes from '../shared/react-routes'
 import api from './api'
-// import reactRoutingMiddleware from './react-routing-middleware'
+import reducers from '../shared/reducers'
 
 export default () => {
+
+  console.log(util.inspect(config))
 
   //////
   // SERVER CONFIG
@@ -82,30 +87,55 @@ export default () => {
 
   //----- REACT ROUTER INTEGRATION
 
+  function fetchComponentData(dispatch, components, params) {
+    // walk all components used for this route
+    // look at the static actionsNeeded property
+    // collect all actions and gather them to be the real init datas
+    const needs = components.reduce( (prev, current) => {
+      util.inspect(current, {showHidden: true})
+      util.inspect(prev, {showHidden: true})
+      return current ? (current.actionsNeeded || []).concat(prev) : prev;
+    }, []);
+
+    const promises = needs.map(need => dispatch(need(params)));
+    return Promise.all(promises);
+  }
+
+
   app.use(function reactRoutingMiddleware(req, res, next) {
-    // In case of async operations (like DB queries)
-    Promise.resolve({datas: {}})
-    .then(mapReactRoutingToExpress)
-    .catch(next)
 
-    function mapReactRoutingToExpress(initialState) {
+    const store = createStore(reducers, applyMiddleware(
+      createLogger({
+        colors: false,
+      }),
+    ))
 
-      const store = createStore(function reducer(state) {
-        return state
-      }, initialState)
+    // Map routing from express to react
+    match({
+      routes:   reactRoutes(store),
+      location: req.url,
+    }, reactMatchRoute)
 
-      // Make the mapping from react routing to express
-      match({
-        routes:   reactRoutes(store),
-        location: req.url,
-      }, reactMatchRoute)
+    function reactMatchRoute(error, redirectLocation, renderProps) {
+      if (error) return next(err)
+      if (redirectLocation) {
+        return res.redirect(redirectLocation.pathname + redirectLocation.search)
+      }
+      if (!renderProps) return next()
 
-      function reactMatchRoute(error, redirectLocation, renderProps) {
-        if (error) return next(err)
-        if (redirectLocation) {
-          return res.redirect(redirectLocation.pathname + redirectLocation.search)
-        }
-        if (!renderProps) return next()
+      // console.log(util.inspect(renderProps))
+
+      // fetch datas from components
+      fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
+      .then(renderView)
+      // .then(html => res.end(html))
+      // .catch(err => res.end(err.message));
+    // }
+
+      // renderView(store, renderProps)
+      function renderView() {
+
+        const initialState = store.getState();
         // use jade to render all wrapping markup
         return res.render('_layout', {
           dom: renderToString(
@@ -118,6 +148,7 @@ export default () => {
         })
       }
     }
+
   })
 
   //////

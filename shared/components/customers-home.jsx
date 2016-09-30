@@ -1,9 +1,20 @@
 import React from 'react'
 
-const Customers = () => (
-  <div>
-    <h1>Customers</h1>
-  </div>
-)
+import * as customersActions from '../actions/customers-actions'
+
+const Customers = React.createClass({
+  statics: {
+    actionsNeeded: [
+      customersActions.list,
+    ],
+  },
+  render: () =>{
+    return (
+      <div>
+        <h1>Customers larve</h1>
+      </div>
+    )
+  }
+})
 
 export { Customers as default }

@@ -1,6 +1,5 @@
-'use strict'
-
 import rc from 'rc'
+import util from 'util'
 
 const config    = rc('dumb-account', {})
 

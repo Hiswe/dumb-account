@@ -14,9 +14,9 @@ html(lang="en")
   body
     #react-main-mount
       | !{dom}
-    //- if initialState
-    //-   script.
-    //-     window.__INITIAL_STATE__ = !{JSON.stringify(initialState)}
+    if initialState
+      script.
+        window.__INITIAL_STATE__ = !{JSON.stringify(initialState)}
 
     script(src="/dumb-account-lib.js")
     script(src="/dumb-account.js")

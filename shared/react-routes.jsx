@@ -33,7 +33,11 @@ export default function provideRouter(store) {
       <Route path="customers" component={CustomersHome} />
 
       <Route path="404" component={_404} />
-      <Route path="*" component={_404} />
+
     </Route>
   )
 }
+
+// Remove * route as the '_404 component'…
+// …override renderProps.components legit component
+// <Route path="*" component={_404} />
