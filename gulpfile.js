@@ -1,5 +1,8 @@
 'use strict'
 
+// this use gulp 4
+// https://github.com/gulpjs/gulp/blob/4.0/docs/API.md
+
 var gulp          = require('gulp')
 var $             = require('gulp-load-plugins')()
 var browserSync   = require('browser-sync').create()
@@ -8,7 +11,6 @@ var args          = require('yargs').argv
 var reload        = browserSync.reload
 var isDev         = args.prod !== true
 var jsBasedir     = __dirname + '/js'
-
 
 function onError(err) {
   $.util.beep();
@@ -125,32 +127,44 @@ const js = gulp.parallel(jsLib, jsApp)
 
 const build = js
 
-function launchBrowserSync(cb) {
-  browserSync.init({
-    proxy:      'http://localhost:3000',
-    open:       false,
-    port:       7000,
-    ghostMode:  false,
-  }, cb)
-}
+// var nodemon = require('nodemon');
 
-let init = true
-function nodemon(cb) {
-   return $.nodemon({
-    script: 'index.js',
+function devServer(cb) {
+  $.util.log('nodemon')
+
+  $.nodemon({
+    script: './index.js',
     ext:    'js json jsx',
-    watch:  ['index.js',  'shared/**/*', 'server/**/*', 'views/**/*'],
-    env:    { 'NODE_ENV': 'development' }
-  }).on('start', () => {
-    // https://gist.github.com/sogko/b53d33d4f3b40d3b4b2e#comment-1457582
-    if (init) {
-      init = false
-      cb()
-    }
+    // watch:  ['index.js',  'shared/**/*', 'server/**/*', 'views/**/*'],
+    watch:  [
+      'shared/actions',
+      'shared/components',
+      'shared/reducers',
+      'shared/react-routes.jsx',
+      'server',
+    ],
+    env:    { 'NODE_ENV': 'development' },
+    delay:  500,
   })
+  .once('start', onStart)
+  .on('restart', () => {
+    $.util.log('nodemon restart')
+    // reload()
+  })
+
+  function onStart() {
+    $.util.log('nodemon start')
+    $.util.log('browser-sync start')
+    browserSync.init({
+      proxy:      'http://localhost:3000',
+      open:       false,
+      port:       7000,
+      ghostMode:  false,
+    }, cb)
+  }
 }
 
-const dev = gulp.series(build, nodemon, launchBrowserSync)
+const dev = gulp.series(build, devServer)
 
 ////////
 // EXPORTS
