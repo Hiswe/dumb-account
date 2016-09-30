@@ -17,6 +17,7 @@ import { Provider }         from 'react-redux'
 
 import config from './config'
 import reactRoutes from '../shared/react-routes'
+import api from './api'
 // import reactRoutingMiddleware from './react-routing-middleware'
 
 export default () => {
@@ -74,6 +75,12 @@ export default () => {
   //////
   // ROUTING
   //////
+
+  //----- JSON API
+
+  app.use('/api/v1', api)
+
+  //----- REACT ROUTER INTEGRATION
 
   app.use(function reactRoutingMiddleware(req, res, next) {
     // In case of async operations (like DB queries)

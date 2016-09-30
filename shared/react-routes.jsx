@@ -6,6 +6,8 @@ import Home           from './components/home.jsx'
 
 import QuotationHome  from './components/quotations-home.jsx'
 
+import CustomersHome  from './components/customers-home.jsx'
+
 import _404           from './components/404.jsx'
 
 // wrap in a function for router to have access the state
@@ -27,6 +29,8 @@ export default function provideRouter(store) {
       <IndexRoute component={Home} />
 
       <Route path="quotations" component={QuotationHome} />
+
+      <Route path="customers" component={CustomersHome} />
 
       <Route path="404" component={_404} />
       <Route path="*" component={_404} />

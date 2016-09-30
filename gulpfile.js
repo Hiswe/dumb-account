@@ -114,7 +114,7 @@ function bundleShare(b) {
   // .pipe($.sourcemaps.init({loadMaps: true}))
   // .pipe($.sourcemaps.write('.'))
   .pipe(gulp.dest('./public'))
-  .on('end', reload)
+  // .on('end', reload)
 }
 
 const js = gulp.parallel(jsLib, jsApp)
