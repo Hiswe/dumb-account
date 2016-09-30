@@ -1,12 +1,12 @@
 import React from 'react'
 import { Route, IndexRoute, Redirect } from 'react-router'
 
-import Layout         from '../views/_layout.jsx'
-import Home           from '../views/home.jsx'
+import Layout         from './components/_layout.jsx'
+import Home           from './components/home.jsx'
 
-import QuotationHome  from '../views/quotations-home.jsx'
+import QuotationHome  from './components/quotations-home.jsx'
 
-import _404           from '../views/404.jsx'
+import _404           from './components/404.jsx'
 
 // wrap in a function for router to have access the state
 export default function provideRouter(store) {

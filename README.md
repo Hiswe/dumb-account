@@ -13,3 +13,9 @@ npm start
 ```
 
 server will be running on `localhost:3000`
+
+### dev server
+
+```
+npm run dev
+```

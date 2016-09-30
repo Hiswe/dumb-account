@@ -1,9 +1,8 @@
-'use strict'
-
 // use babel for ES2015 import & JSX
 require('babel-core/register')({
   presets: ['es2015', 'react'],
-  ignore: (filename) => /node_module/.test(filename),
+  // ignoring only node_modules is done by default
+  // ignore: (filename) => /node_module/.test(filename),
 })
 
 // enable node concurrency

@@ -2,7 +2,7 @@
 
 var gulp          = require('gulp')
 var $             = require('gulp-load-plugins')()
-var browserSync   = require('browser-sync')
+var browserSync   = require('browser-sync').create()
 
 var args          = require('yargs').argv
 var reload        = browserSync.reload
@@ -36,14 +36,14 @@ var npmLibs       = [
   // 'autosize',
   // 'epiceditor/src/editor',
   // 'marked',
-  'react',
-  // 'react-dom',
-  // 'react-router',
   // 'lodash.omit',
   // 'moment',
   // 'marked',
-  // 'redux',
-  // 'react-redux',
+  'react',
+  'react-dom',
+  'react-router',
+  'redux',
+  'react-redux',
 ];
 
 function jsLib() {
@@ -75,7 +75,7 @@ function jsApp() {
     packageCache: {},
     debug:        isDev,
     extensions:   ['.js', '.jsx'],
-    entries:      ['./js/front-app.js']
+    entries:      ['./js/front-app.jsx']
   })
   .external(npmLibs)
   .transform(babelify, {
@@ -114,12 +114,49 @@ function bundleShare(b) {
   // .pipe($.sourcemaps.init({loadMaps: true}))
   // .pipe($.sourcemaps.write('.'))
   .pipe(gulp.dest('./public'))
+  .on('end', reload)
 }
 
 const js = gulp.parallel(jsLib, jsApp)
 
+////////
+// DEV
+////////
+
+const build = js
+
+function launchBrowserSync(cb) {
+  browserSync.init({
+    proxy:      'http://localhost:3000',
+    open:       false,
+    port:       7000,
+    ghostMode:  false,
+  }, cb)
+}
+
+let init = true
+function nodemon(cb) {
+   return $.nodemon({
+    script: 'index.js',
+    ext:    'js json jsx',
+    watch:  ['index.js',  'shared/**/*', 'server/**/*', 'views/**/*'],
+    env:    { 'NODE_ENV': 'development' }
+  }).on('start', () => {
+    // https://gist.github.com/sogko/b53d33d4f3b40d3b4b2e#comment-1457582
+    if (init) {
+      init = false
+      cb()
+    }
+  })
+}
+
+const dev = gulp.series(build, nodemon, launchBrowserSync)
+
+////////
+// EXPORTS
+////////
+
 module.exports = {
-  'js-lib': jsLib,
-  'js-app': jsApp,
-  js:       js,
+  build,
+  dev,
 }
