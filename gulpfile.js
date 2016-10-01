@@ -127,24 +127,23 @@ const js = gulp.parallel(jsLib, jsApp)
 
 const build = js
 
-// var nodemon = require('nodemon');
 
 function devServer(cb) {
   $.util.log('nodemon')
 
+  // double restart issue on node6
+  // https://github.com/remy/nodemon/issues/763
+  // https://github.com/remy/nodemon/issues/844
   $.nodemon({
     script: './index.js',
     ext:    'js json jsx',
-    // watch:  ['index.js',  'shared/**/*', 'server/**/*', 'views/**/*'],
+    // runOnChangeOnly: true,
     watch:  [
-      'shared/actions',
-      'shared/components',
-      'shared/reducers',
-      'shared/react-routes.jsx',
+      'shared',
       'server',
     ],
     env:    { 'NODE_ENV': 'development' },
-    delay:  500,
+    delay:  1,
   })
   .once('start', onStart)
   .on('restart', () => {

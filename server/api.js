@@ -12,16 +12,26 @@ api
   })
 })
 
-
 //----- HOME PAGES
 
 
 //----- CUSTOMER
 
+let customers = [{name: 'pouic'}, {name: 'clapou'}]
+
 api
 .route('/customers')
 .get((req, res, next) => {
   res.json({
-    customers: ['pouic', 'clapou'],
+    customers,
+  })
+})
+
+api
+.route('/customer')
+.post((req, res, next) => {
+  customers.push(req.body)
+  res.json({
+    customers,
   })
 })

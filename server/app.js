@@ -85,6 +85,23 @@ export default () => {
 
   app.use('/api/v1', api)
 
+  //----- NO-JS BACKUP
+
+  app.post('/customer', (req, res, next) => {
+    console.log(req.body)
+    const client = axios.create({
+      baseURL:      `${req.protocol}://${config.host}/api/v1`,
+      responseType: 'json'
+    })
+    const url = req.url
+
+    client
+    .post(url, req.body)
+    .then(() => res.redirect('/customers'))
+    .catch(next)
+
+  })
+
   //----- REACT ROUTER INTEGRATION
 
   function fetchComponentData(dispatch, components, params) {
@@ -114,7 +131,7 @@ export default () => {
     // https://github.com/svrcekmichal/redux-axios-middleware#use-middleware
     const middleware  = [
       axiosMiddleware(client),
-      createLogger({ colors: false, }),
+      // createLogger({ colors: false, }),
     ]
 
     const store       = createStore(reducers, applyMiddleware(...middleware) )
