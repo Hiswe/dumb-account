@@ -19,7 +19,7 @@ import axios from 'axios'
 import axiosMiddleware from 'redux-axios-middleware'
 
 import config from './config'
-import reactRoutes from '../shared/react-routes'
+import {default as reactRoutes, fetchComponentData} from '../shared/react-routes'
 import api from './api'
 import reducers from '../shared/reducers'
 
@@ -86,6 +86,7 @@ export default () => {
   app.use('/api/v1', api)
 
   // expose axios to req, so we can make api call easily server-side
+  // can't create it outside a middleware because we need req.protocol
   app.use((req, res, next) => {
     req.apiCall = axios.create({
       baseURL:      `${req.protocol}://${config.host}/api/v1`,
@@ -97,7 +98,7 @@ export default () => {
   //----- NO-JS BACKUP
 
   // In order to have a real isomorphic app…
-  // …we need to take care of no AJAX request
+  // …we need to take care of no-AJAX request
   app.post('/customer', (req, res, next) => {
     req.apiCall
     .post('/customer', req.body)
@@ -106,20 +107,6 @@ export default () => {
   })
 
   //----- REACT ROUTER INTEGRATION
-
-  function fetchComponentData(dispatch, components, params) {
-    // walk all components used for this route
-    // look at the static actionsNeeded property
-    // collect all actions and gather them to consolidate init datas
-    const needs = components.reduce( (prev, current) => {
-      util.inspect(current, {showHidden: true})
-      util.inspect(prev, {showHidden: true})
-      return current ? (current.actionsNeeded || []).concat(prev) : prev;
-    }, []);
-
-    const promises = needs.map(need => dispatch(need(params)));
-    return Promise.all(promises);
-  }
 
   app.use(function reactRoutingMiddleware(req, res, next) {
     // Add a middleware to Redux to avoid doing manual async functions
@@ -130,7 +117,9 @@ export default () => {
       // createLogger({ colors: false, }),
     ]
 
-    const store = createStore(reducers, applyMiddleware(...middleware) )
+    const store = createStore(reducers, {
+      customers: [],
+    }, applyMiddleware(...middleware) )
 
     // Map routing from express to react
     match({
@@ -138,8 +127,8 @@ export default () => {
       location: req.url,
     }, reactMatchRoute)
 
-    function reactMatchRoute(error, redirectLocation, renderProps) {
-      if (error) return next(err)
+    function reactMatchRoute(err, redirectLocation, renderProps) {
+      if (err) return next(err)
       if (redirectLocation) {
         return res.redirect(redirectLocation.pathname + redirectLocation.search)
       }

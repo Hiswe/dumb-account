@@ -34,7 +34,6 @@ var vinylBuffer   = require('vinyl-buffer')
 //----- LIBRARIES
 
 var npmLibs       = [
-  // 'jquery',
   // 'autosize',
   // 'epiceditor/src/editor',
   // 'marked',
@@ -46,6 +45,8 @@ var npmLibs       = [
   'react-router',
   'redux',
   'react-redux',
+  'axios',
+  'redux-axios-middleware',
 ];
 
 function jsLib() {
@@ -60,7 +61,7 @@ function jsLib() {
   })
 
   b.transform(envify({
-    _: 'purge',
+    _:        'purge',
     NODE_ENV: isDev ? 'development' : 'production',
   }))
 
