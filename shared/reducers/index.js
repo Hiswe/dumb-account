@@ -6,6 +6,12 @@ export default function appReducers(state = {}, action) {
     // case 'GET_CUSTOMERS':
     case 'GET_CUSTOMERS_SUCCESS':
       return Object.assign({}, state, action.payload.data)
+    case 'NEW_CUSTOMER_SUCCESS':
+      return Object.assign(
+        {},
+        state,
+        {customers: state.customers.concat([action.payload.data])},)
+      return state
     default:
       return state
   }

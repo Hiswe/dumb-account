@@ -7,7 +7,7 @@ import compression from 'compression'
 import morgan from 'morgan'
 import favicon from 'serve-favicon'
 import createError from 'http-errors'
-
+// React
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { RouterContext, match } from 'react-router'
@@ -84,6 +84,8 @@ export default () => {
   //----- JSON API
 
   app.use('/api/v1', api)
+
+  // expose axios to req, so we can make api call easily server-side
   app.use((req, res, next) => {
     req.apiCall = axios.create({
       baseURL:      `${req.protocol}://${config.host}/api/v1`,
@@ -94,6 +96,8 @@ export default () => {
 
   //----- NO-JS BACKUP
 
+  // In order to have a real isomorphic app…
+  // …we need to take care of no AJAX request
   app.post('/customer', (req, res, next) => {
     req.apiCall
     .post('/customer', req.body)
@@ -106,7 +110,7 @@ export default () => {
   function fetchComponentData(dispatch, components, params) {
     // walk all components used for this route
     // look at the static actionsNeeded property
-    // collect all actions and gather them to be the real init datas
+    // collect all actions and gather them to consolidate init datas
     const needs = components.reduce( (prev, current) => {
       util.inspect(current, {showHidden: true})
       util.inspect(prev, {showHidden: true})
@@ -119,7 +123,7 @@ export default () => {
 
   app.use(function reactRoutingMiddleware(req, res, next) {
     // Add a middleware to Redux to avoid doing manual async functions
-    // This use middleware promises :)
+    // This middleware use promises :)
     // https://github.com/svrcekmichal/redux-axios-middleware#use-middleware
     const middleware = [
       axiosMiddleware(req.apiCall),

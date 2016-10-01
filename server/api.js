@@ -31,7 +31,5 @@ api
 .route('/customer')
 .post((req, res, next) => {
   customers.push(req.body)
-  res.json({
-    customers,
-  })
+  res.json(req.body)
 })

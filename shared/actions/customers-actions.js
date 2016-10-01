@@ -8,6 +8,20 @@ export function list() {
         url:'/customers'
       }
     }
-    // promise: request.get(API_URL)
+  }
+}
+
+export function add(data) {
+  console.log('action new customer')
+  console.log(data)
+  return {
+    type:       'NEW_CUSTOMER',
+    payload: {
+      request: {
+        method: 'post',
+        url:    '/customer',
+        data,
+      }
+    }
   }
 }

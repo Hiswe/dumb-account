@@ -1,24 +1,30 @@
-import React          from 'react'
-import { render }     from 'react-dom'
+import React            from 'react'
+import { render }       from 'react-dom'
 import {
   Router,
   browserHistory,
-}                     from 'react-router'
+}                       from 'react-router'
 import {
   createStore,
   applyMiddleware,
   compose,
-}                     from 'redux'
-import { Provider }   from 'react-redux'
-import createLogger   from 'redux-logger'
+}                       from 'redux'
+import { Provider }     from 'react-redux'
+import createLogger     from 'redux-logger'
+import axios            from 'axios'
+import axiosMiddleware  from 'redux-axios-middleware'
 
 import reducer        from '../shared/reducers'
 import routes         from '../shared/react-routes.jsx'
 
 const $root             = document.querySelector('#react-main-mount')
 const initialState      = window.__INITIAL_STATE__ || {}
-// const loggerMiddleware  = createLogger()
+const apiCall           = axios.create({
+  baseURL:      `/api/v1`,
+  responseType: 'json',
+})
 const middleware        = [
+  axiosMiddleware(apiCall),
   createLogger(),
 ]
 
