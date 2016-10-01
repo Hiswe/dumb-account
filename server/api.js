@@ -1,5 +1,7 @@
 import express from 'express'
 
+import { Customers } from './models'
+
 const api = express()
 export default api
 
@@ -17,19 +19,24 @@ api
 
 //----- CUSTOMER
 
-let customers = [{name: 'pouic'}, {name: 'clapou'}]
-
 api
 .route('/customers')
 .get((req, res, next) => {
-  res.json({
-    customers,
-  })
+  Customers
+  .find({})
+  .then( customers => res.json({ customers, }) )
+  .catch(next)
 })
 
 api
-.route('/customer')
+.route('/customer/:customerId?')
 .post((req, res, next) => {
-  customers.push(req.body)
-  res.json(req.body)
+  const customerId  = req.params.customerId
+  const dbRequest   = customerId ?
+    Customers.findByIdAndUpdate(customerId, req.body, {runValidators: true})
+    : new Customers(req.body).save()
+
+  dbRequest
+  .then( user => res.json(user) )
+  .catch(next)
 })
