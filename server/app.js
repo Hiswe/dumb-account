@@ -84,22 +84,21 @@ export default () => {
   //----- JSON API
 
   app.use('/api/v1', api)
+  app.use((req, res, next) => {
+    req.apiCall = axios.create({
+      baseURL:      `${req.protocol}://${config.host}/api/v1`,
+      responseType: 'json',
+    })
+    next()
+  })
 
   //----- NO-JS BACKUP
 
   app.post('/customer', (req, res, next) => {
-    console.log(req.body)
-    const client = axios.create({
-      baseURL:      `${req.protocol}://${config.host}/api/v1`,
-      responseType: 'json'
-    })
-    const url = req.url
-
-    client
-    .post(url, req.body)
+    req.apiCall
+    .post('/customer', req.body)
     .then(() => res.redirect('/customers'))
     .catch(next)
-
   })
 
   //----- REACT ROUTER INTEGRATION
@@ -118,23 +117,16 @@ export default () => {
     return Promise.all(promises);
   }
 
-
   app.use(function reactRoutingMiddleware(req, res, next) {
-
-    const client = axios.create({
-      baseURL:      `${req.protocol}://${config.host}/api/v1`,
-      responseType: 'json'
-    })
-
     // Add a middleware to Redux to avoid doing manual async functions
     // This use middleware promises :)
     // https://github.com/svrcekmichal/redux-axios-middleware#use-middleware
-    const middleware  = [
-      axiosMiddleware(client),
+    const middleware = [
+      axiosMiddleware(req.apiCall),
       // createLogger({ colors: false, }),
     ]
 
-    const store       = createStore(reducers, applyMiddleware(...middleware) )
+    const store = createStore(reducers, applyMiddleware(...middleware) )
 
     // Map routing from express to react
     match({
