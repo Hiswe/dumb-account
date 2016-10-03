@@ -17,6 +17,11 @@ import { Provider } from 'react-redux'
 import createLogger from 'redux-logger'
 import axios from 'axios'
 import axiosMiddleware from 'redux-axios-middleware'
+// redux handle immutable state…
+// …add a lib to help not messing with object mutations
+// a better alternative could be https://github.com/substantial/updeep
+import Immutable from 'immutable'
+
 
 import config from './config'
 import {default as reactRoutes, fetchComponentData} from '../shared/react-routes'
@@ -116,10 +121,16 @@ export default () => {
       axiosMiddleware(req.apiCall),
       // createLogger({ colors: false, }),
     ]
-
-    const store = createStore(reducers, {
-      customers: [],
-    }, applyMiddleware(...middleware) )
+    // Define a coherent empty state
+    const emptyState = Immutable.fromJS({
+      entities: {
+        customers: {},
+      },
+      result: {
+        customers: [],
+      }
+    })
+    const store = createStore(reducers, emptyState, applyMiddleware(...middleware) )
 
     // Map routing from express to react
     match({
@@ -142,7 +153,9 @@ export default () => {
       function renderView() {
         // Redux store should be up date to that at this time
         // we can safely get current sate
-        const initialState = store.getState()
+        // const initialState = store.getState()
+        // needed for not putting functions in HTML body
+        const initialState = store.getState().toJS()
         // use jade to render all wrapping markup
         return res.render('_layout', {
           dom: renderToString(

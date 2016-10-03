@@ -46,13 +46,13 @@ Customers = connect(
 const CustomerRow = function (props) {
   let customer = props.customer
   return (
-    <li>{customer.name}</li>
+    <li>{customer.get('name')}</li>
   )
 }
 
 let CustomerList = function (props) {
-  let body = props.customers.map( (customer, i) => (
-    <CustomerRow key={customer.name} customer={customer} />
+  let body = props.customerIds.map( (customerId, i) => (
+    <CustomerRow key={customerId} customer={props.customers.get(customerId)} />
   ))
   return (
     <ul>
@@ -62,9 +62,10 @@ let CustomerList = function (props) {
 }
 
 function mapStateToProp(state) {
+  // Immutable make use of accessors
   return {
-    // ids:        state.result.customers,
-    customers:  state.customers,
+    customerIds:  state.getIn(['result', 'customers']),
+    customers:    state.getIn(['entities', 'customers']),
   }
 }
 
