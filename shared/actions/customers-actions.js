@@ -25,3 +25,15 @@ export function add(data) {
     }
   }
 }
+
+export function remove(id) {
+  return {
+    type:       'REMOVE_CUSTOMER',
+    payload: {
+      request: {
+        method: 'delete',
+        url:    `/customer/${id}`,
+      }
+    }
+  }
+}

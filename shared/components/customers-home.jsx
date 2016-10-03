@@ -41,23 +41,31 @@ Customers = connect(
   state => ({ customers:  state.customers, })
 )(Customers)
 
-//
 
-const CustomerRow = function (props) {
-  let customer = props.customer
+// in ES6 destructuring can be done on the params…
+const CustomerRow = function ({customer, onRemove}) {
   let delRoute = `/customer/${customer.get('_id')}?_method=DELETE`
   return (
     <li>
       {customer.get('name')}
       {'\u00A0'}
-      <a href={delRoute}>x</a>
+      <a href={delRoute} onClick={e => {
+         e.preventDefault()
+         onRemove()
+      }}>x</a>
     </li>
   )
 }
 
+// …or can be done after
 let CustomerList = function (props) {
-  let body = props.customerIds.map( (customerId, i) => (
-    <CustomerRow key={customerId} customer={props.customers.get(customerId)} />
+  const {customersId, customers, onRemoveClick} = props
+  let body = customersId.map( (customerId, i) => (
+    <CustomerRow
+      key={customerId}
+      customer={customers.get(customerId)}
+      onRemove={() => onRemoveClick(customerId)}
+    />
   ))
   return (
     <ul>
@@ -66,14 +74,27 @@ let CustomerList = function (props) {
   )
 }
 
+// map state properties to props…
+// …this is where our components will have their infos
 function mapStateToProp(state) {
   // Immutable make use of accessors
   return {
-    customerIds:  state.getIn(['result', 'customers']),
+    customersId:  state.getIn(['result', 'customers']),
     customers:    state.getIn(['entities', 'customers']),
   }
 }
 
-CustomerList = connect(mapStateToProp)(CustomerList)
+// map dispatch properties to props…
+// …this is where we can react to user interactions
+function mapDispatchToProp(dispatch, ownProps) {
+  return {
+    onRemoveClick: (id) => {
+      dispatch(customersActions.remove(id))
+    }
+  }
+}
+// a precious example of what is it to separate view components and states
+// http://redux.js.org/docs/basics/ExampleTodoList.html
+CustomerList = connect(mapStateToProp, mapDispatchToProp)(CustomerList)
 
 export { Customers as default }
