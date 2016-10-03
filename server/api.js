@@ -89,5 +89,5 @@ api
   .then( customer => {
     sendFormatedResponse(res, { customers: [customer]  })
   })
-
+  .catch(next)
 })
