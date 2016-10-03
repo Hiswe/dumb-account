@@ -3,6 +3,7 @@ import chalk from 'chalk'
 import util from 'util'
 import express from 'express'
 import bodyParser from 'body-parser'
+import methodOverride from 'method-override'
 import compression from 'compression'
 import morgan from 'morgan'
 import favicon from 'serve-favicon'
@@ -46,6 +47,8 @@ export default () => {
     limit: '5mb',
     extended: true,
   }))
+  // enable other methods from request (PUT, DELETE…)
+  app.use(methodOverride('_method', {methods: ['GET', 'POST']}))
   app.use(compression())
   // app.use(favicon(path.join(__dirname, '../res/favicon.png')))
   // app.use(cookieParser())
@@ -106,8 +109,14 @@ export default () => {
   // …we need to take care of no-AJAX request
   app.post('/customer', (req, res, next) => {
     req.apiCall
-    .post('/customer', req.body)
+    .post(req.path, req.body)
     .then(() => res.redirect('/customers'))
+    .catch(next)
+  })
+  app.delete('/customer/:customerId', (req, res, next) => {
+    req.apiCall
+    .delete(req.path)
+    .then( () => res.redirect('/customers'))
     .catch(next)
   })
 

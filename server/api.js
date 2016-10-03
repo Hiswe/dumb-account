@@ -71,12 +71,23 @@ api
   const customerId  = req.params.customerId
   const dbRequest   = customerId ?
     Customers.findByIdAndUpdate(customerId, req.body, {runValidators: true})
-    : new Customers(req.body).save()
+    : Customers.create(req.body)
 
   dbRequest
   .then( customer => {
     // toObject() is the same thing as for lean: going to mongooseObj to plain Obj
     sendFormatedResponse(res, { customers: [customer.toObject()]  })
+    sendFormatedResponse(res, { customers: [customer]  })
   })
   .catch(next)
+})
+.delete((req, res, next) => {
+  const customerId  = req.params.customerId
+  Customers
+  .findByIdAndRemove(customerId)
+  .lean()
+  .then( customer => {
+    sendFormatedResponse(res, { customers: [customer]  })
+  })
+
 })

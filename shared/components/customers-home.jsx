@@ -45,8 +45,13 @@ Customers = connect(
 
 const CustomerRow = function (props) {
   let customer = props.customer
+  let delRoute = `/customer/${customer.get('_id')}?_method=DELETE`
   return (
-    <li>{customer.get('name')}</li>
+    <li>
+      {customer.get('name')}
+      {'\u00A0'}
+      <a href={delRoute}>x</a>
+    </li>
   )
 }
 
