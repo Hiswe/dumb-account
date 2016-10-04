@@ -24,11 +24,11 @@ let Customers = React.createClass({
     return (
       <div>
         <h1>Customers</h1>
-        <CustomerList />
         <form method="post" action="/customer" onSubmit={this.handleSubmit}>
           <input name="name" ref="customer-name"/>
           <button type="submit">Add new</button>
         </form>
+        <CustomerList />
       </div>
     )
   }

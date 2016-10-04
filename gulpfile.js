@@ -132,9 +132,6 @@ const build = js
 function devServer(cb) {
   $.util.log('nodemon')
 
-  // double restart issue on node6
-  // https://github.com/remy/nodemon/issues/763
-  // https://github.com/remy/nodemon/issues/844
   $.nodemon({
     script: './index.js',
     ext:    'js json jsx',
@@ -145,6 +142,10 @@ function devServer(cb) {
     ],
     env:    { 'NODE_ENV': 'development' },
     delay:  1,
+    // legacy watch to fix double restart issue on node6
+    // https://github.com/remy/nodemon/issues/763
+    // https://github.com/remy/nodemon/issues/844
+    legacyWatch: true,
   })
   .once('start', onStart)
   .on('restart', () => {

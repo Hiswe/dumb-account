@@ -24,8 +24,6 @@ export function show(params) {
 }
 
 export function add(data) {
-  console.log('action new customer')
-  console.log(data)
   return {
     type:       'NEW_CUSTOMER',
     payload: {
