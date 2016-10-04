@@ -9,7 +9,12 @@ export default function appReducers(state = {}, action) {
     // exemple: for GET_CUSTOMERS action redux-axios-middleware will generate:
     //  - GET_CUSTOMERS_SUCCESS
     //  - GET_CUSTOMERS_FAIL
-    case 'GET_CUSTOMERS_SUCCESS':
+    case 'LIST_CUSTOMERS_SUCCESS':
+      return state.mergeDeep(action.payload.data)
+    case 'GET_CUSTOMER_SUCCESS':
+      tmp   = state.getIn(['result', 'customers']).indexOf(data.result.customers[0])
+      // Don't add twice the same customer
+      if (tmp !== -1) return state
       return state.mergeDeep(action.payload.data)
     case 'NEW_CUSTOMER_SUCCESS':
       state = state.updateIn(['result', 'customers'], list => {

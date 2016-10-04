@@ -5,6 +5,7 @@ import Layout         from './components/_layout.jsx'
 import Home           from './components/home.jsx'
 import QuotationHome  from './components/quotations-home.jsx'
 import CustomersHome  from './components/customers-home.jsx'
+import CustomerEdit   from './components/customer-edit.jsx'
 
 import _404           from './components/404.jsx'
 
@@ -54,6 +55,8 @@ export default function provideRouter(store) {
       <Route path="quotations" component={QuotationHome} onEnter={handleEnter} />
 
       <Route path="customers" component={CustomersHome} onEnter={handleEnter} />
+      <Route path="customer/:customerId" component={CustomerEdit} onEnter={handleEnter} />
+
 
       <Route path="404" component={_404} />
 

@@ -81,10 +81,21 @@ api
   })
   .catch(next)
 })
-.delete((req, res, next) => {
-  const customerId  = req.params.customerId
+
+api
+.route('/customer/:customerId')
+.get((req, res, next) => {
   Customers
-  .findByIdAndRemove(customerId)
+  .findById(req.params.customerId)
+  .lean()
+  .then( customer => {
+    sendFormatedResponse(res, { customers: [customer]  })
+  })
+  .catch(next)
+})
+.delete((req, res, next) => {
+  Customers
+  .findByIdAndRemove(req.params.customerId)
   .lean()
   .then( customer => {
     sendFormatedResponse(res, { customers: [customer]  })

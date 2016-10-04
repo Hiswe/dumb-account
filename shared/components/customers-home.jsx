@@ -1,5 +1,5 @@
 import React from 'react'
-// import { Link } from 'react-router'
+import { Link } from 'react-router'
 // import { bindActionCreators }  from 'redux'
 import { connect }  from 'react-redux'
 
@@ -44,11 +44,12 @@ Customers = connect(
 
 // in ES6 destructuring can be done on the params…
 const CustomerRow = function ({customer, onRemove}) {
-  let delRoute = `/customer/${customer.get('_id')}?_method=DELETE`
+  let getRoute = `/customer/${customer.get('_id')}`
+  let delRoute = `${getRoute}?_method=DELETE`
   return (
     <li>
-      {customer.get('name')}
-      {'\u00A0'}
+      <Link to={getRoute}>{customer.get('name')}</Link>
+      {'\u00A0—\u00A0'}
       <a href={delRoute} onClick={e => {
          e.preventDefault()
          onRemove()

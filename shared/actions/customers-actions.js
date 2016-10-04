@@ -2,12 +2,24 @@
 
 export function list() {
   return {
-    type:    'GET_CUSTOMERS',
+    type:    'LIST_CUSTOMERS',
     payload: {
       request:{
-        url:'/customers'
-      }
-    }
+        url: '/customers',
+      },
+    },
+  }
+}
+
+// url params are passed to fetchComponentData on the front & backend
+export function show(params) {
+  return {
+    type: 'GET_CUSTOMER',
+    payload: {
+      request:{
+        url: `/customer/${params.customerId}`,
+      },
+    },
   }
 }
 
@@ -21,8 +33,8 @@ export function add(data) {
         method: 'post',
         url:    '/customer',
         data,
-      }
-    }
+      },
+    },
   }
 }
 
@@ -33,7 +45,21 @@ export function remove(id) {
       request: {
         method: 'delete',
         url:    `/customer/${id}`,
-      }
-    }
+      },
+    },
+  }
+}
+
+
+export function update(id, data) {
+  return {
+    type:       'UPDATE_CUSTOMER',
+    payload: {
+      request: {
+        method: 'post',
+        url:    `/customer/${id}`,
+        data,
+      },
+    },
   }
 }

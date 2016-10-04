@@ -107,10 +107,14 @@ export default () => {
 
   // In order to have a real isomorphic app…
   // …we need to take care of no-AJAX request
-  app.post('/customer', (req, res, next) => {
+  app.post('/customer/:customerId?', (req, res, next) => {
+    const {customerId} = req.params
     req.apiCall
     .post(req.path, req.body)
-    .then(() => res.redirect('/customers'))
+    .then(() => {
+      if (customerId) return res.redirect(`/customer/${customerId}`)
+      res.redirect('/customers')
+    })
     .catch(next)
   })
   app.delete('/customer/:customerId', (req, res, next) => {
@@ -155,6 +159,7 @@ export default () => {
       if (!renderProps) return next()
 
       // fetch datas from components
+      // present in the react-routes file, as it is used front-end & back-end
       fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
       .then(renderView)
       .catch(next)
