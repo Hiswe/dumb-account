@@ -135,7 +135,6 @@ function devServer(cb) {
   $.nodemon({
     script: './index.js',
     ext:    'js json jsx',
-    // runOnChangeOnly: true,
     watch:  [
       'shared',
       'server',
@@ -146,12 +145,13 @@ function devServer(cb) {
     // https://github.com/remy/nodemon/issues/763
     // https://github.com/remy/nodemon/issues/844
     legacyWatch: true,
+    // It could be possible to do an app reload when server is listening
+    // I still have to find a way to put back the logs AND preserve output colors
+    // http://stackoverflow.com/questions/35799989/is-there-a-way-for-nodemon-to-listen-to-events-emitted-by-the-child-process
+    // stdout: false,
   })
   .once('start', onStart)
-  .on('restart', () => {
-    $.util.log('nodemon restart')
-    // reload()
-  })
+  .on('restart', () =>  $.util.log('nodemon restart') )
 
   function onStart() {
     $.util.log('nodemon start')

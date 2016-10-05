@@ -1,14 +1,38 @@
 // reducers handles actions
 // create a new state based on action + previous state
+// state should be immutable
+// We use here `immutable.js` methods to prevent changing accidentally state
+
 export default function appReducers(state = {}, action) {
   let data = action.payload ? action.payload.data : null
   let tmp
   switch(action.type) {
+
     // for each action with a payload.request property…
     // …redux-axios-middleware will generate 2 others actions at the end of the axios request
     // exemple: for GET_CUSTOMERS action redux-axios-middleware will generate:
     //  - GET_CUSTOMERS_SUCCESS
     //  - GET_CUSTOMERS_FAIL
+
+    // as a sidenote reducers can be splited in many files…
+    // …and combined all together with redux's combineReducers
+
+    //////
+    // QUOTATIONS
+    //////
+
+    case 'LIST_QUOTATIONS_SUCCESS':
+      return state.mergeDeep(action.payload.data)
+    case 'GET_QUOTATION_SUCCESS':
+      tmp   = state.getIn(['result', 'quotations']).indexOf(data.result.quotations[0])
+      // Don't add twice the same quotation
+      if (tmp !== -1) return state
+      return state.mergeDeep(action.payload.data)
+
+    //////
+    // CUSTOMERS
+    //////
+
     case 'LIST_CUSTOMERS_SUCCESS':
       return state.mergeDeep(action.payload.data)
     case 'GET_CUSTOMER_SUCCESS':
@@ -27,6 +51,11 @@ export default function appReducers(state = {}, action) {
       state = state.deleteIn(['result', 'customers', tmp])
       state = state.deleteIn(['entities', 'customers', data.result.customers[0]] )
       return state
+
+    //////
+    // DEFAULT
+    //////
+
     default:
       return state
   }

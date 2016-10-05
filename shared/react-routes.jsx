@@ -1,13 +1,14 @@
 import React from 'react'
 import { Route, IndexRoute, Redirect } from 'react-router'
 
-import Layout         from './components/_layout.jsx'
-import Home           from './components/home.jsx'
-import QuotationHome  from './components/quotations-home.jsx'
-import CustomersHome  from './components/customers-home.jsx'
-import CustomerEdit   from './components/customer-edit.jsx'
+import Layout           from './components/_layout.jsx'
+import Home             from './components/home.jsx'
+import QuotationHome    from './components/quotations-home.jsx'
+import QuotationNewEdit from './components/quotation-new-edit.jsx'
+import CustomersHome    from './components/customers-home.jsx'
+import CustomerEdit     from './components/customer-edit.jsx'
 
-import _404           from './components/404.jsx'
+import _404             from './components/404.jsx'
 
 
 // walk all components used for this route
@@ -53,6 +54,7 @@ export default function provideRouter(store) {
       <IndexRoute component={Home} onEnter={handleEnter} />
 
       <Route path="quotations" component={QuotationHome} onEnter={handleEnter} />
+      <Route path="quotation(/:quotationId)" component={QuotationNewEdit} onEnter={handleEnter} />
 
       <Route path="customers" component={CustomersHome} onEnter={handleEnter} />
       <Route path="customer/:customerId" component={CustomerEdit} onEnter={handleEnter} />

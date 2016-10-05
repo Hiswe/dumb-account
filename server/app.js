@@ -107,6 +107,20 @@ export default () => {
 
   // In order to have a real isomorphic app…
   // …we need to take care of no-AJAX request
+
+  app.post('/quotation/:quotationId?', (req, res, next) => {
+    console.log(req.body)
+    const {quotationId} = req.params
+    req.apiCall
+    .post(req.path, req.body)
+    .then(() => {
+      if (quotationId) return res.redirect(`/quotation/${quotationId}`)
+      res.redirect('/quotations')
+    })
+    .catch(next)
+  })
+
+
   app.post('/customer/:customerId?', (req, res, next) => {
     const {customerId} = req.params
     req.apiCall
@@ -135,13 +149,16 @@ export default () => {
       // createLogger({ colors: false, }),
     ]
     // Define a coherent empty state
+    // TODO could be done by counting models on ./models.js
     const emptyState = Immutable.fromJS({
       entities: {
-        customers: {},
+        quotations: {},
+        customers:  {},
       },
       result: {
-        customers: [],
-      }
+        quotations: [],
+        customers:  [],
+      },
     })
     const store = createStore(reducers, emptyState, applyMiddleware(...middleware) )
 
