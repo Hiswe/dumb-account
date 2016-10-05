@@ -83,7 +83,7 @@ function jsApp() {
   .external(npmLibs)
   .transform(babelify, {
     presets: ['es2015', 'react'],
-    // plugins: ['transform-object-assign'],
+    plugins: ['transform-class-properties'],
   })
 
   // .transform(envify({
@@ -148,10 +148,13 @@ function devServer(cb) {
     // It could be possible to do an app reload when server is listening
     // I still have to find a way to put back the logs AND preserve output colors
     // http://stackoverflow.com/questions/35799989/is-there-a-way-for-nodemon-to-listen-to-events-emitted-by-the-child-process
+    // maybe try to understand that for colors:
+    // https://github.com/remy/nodemon/commit/bfc4ac1c4dba55f3cf05e6e9e72f226368c090a4#diff-cebf50326ac9e24a94de78bad36e77e1R38
     // stdout: false,
   })
   .once('start', onStart)
   .on('restart', () =>  $.util.log('nodemon restart') )
+  // .on('stdout', data => { })
 
   function onStart() {
     $.util.log('nodemon start')

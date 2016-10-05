@@ -1,8 +1,13 @@
 // use babel for ES2015 import & JSX
 require('babel-core/register')({
   presets: ['react'],
-  // As we use node 6, no need to have the full ES2015 preset for the back
-  plugins: ['transform-es2015-modules-commonjs'],
+
+  plugins: [
+    // As we use node 6, no need to have the full ES2015 preset for the back
+    'transform-es2015-modules-commonjs',
+    // Still need this to support static properties on class
+    'transform-class-properties',
+  ],
   // ignoring only node_modules is done by default
   // ignore: (filename) => /node_module/.test(filename),
 })

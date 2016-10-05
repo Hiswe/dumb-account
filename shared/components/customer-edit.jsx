@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect }  from 'react-redux'
 
 import * as customersActions from '../actions/customers-actions'

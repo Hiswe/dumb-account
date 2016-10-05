@@ -1,25 +1,21 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import { connect }  from 'react-redux'
 
 import * as quotationsActions from '../actions/quotations-actions'
 
-const QuotationsList = React.createClass({
-  statics: {
-    actionsNeeded: [
-      quotationsActions.list,
-    ],
-  },
-  render: function () {
-    return (
-      <div>
-        <h1>Quotations</h1>
-        <Link to="/quotation">new quotation</Link>
-        <QuotationList {...this.props}/>
-      </div>
-    )
-  },
-})
+const QuotationsList = (props) => {
+  return (
+    <div>
+      <h1>Quotations</h1>
+      <Link to="/quotation">new quotation</Link>
+      <QuotationList {...props}/>
+    </div>
+  )
+}
+QuotationsList.actionsNeeded = [
+  quotationsActions.list,
+]
 
 const QuotationList = (props) => {
   const {quotationsId, quotations} = props
