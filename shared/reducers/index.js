@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+// import getOps from 'immutable-ops'
 
 // import quotationsReducers from './quotations-reducers'
 // import customersReducers from './customers-reducers'
@@ -29,7 +30,7 @@ export default function appReducers(state = {}, action) {
     //////
 
     case 'LIST_QUOTATIONS_SUCCESS':
-      return state.mergeDeep(action.payload.data)
+      return state.merge(action.payload.data, {deep: true})
     case 'GET_QUOTATION_SUCCESS':
       tmp   = state.getIn(['result', 'quotations']).indexOf(data.result.quotations[0])
       // Don't add twice the same quotation
@@ -41,20 +42,18 @@ export default function appReducers(state = {}, action) {
     //////
 
     case 'LIST_CUSTOMERS_SUCCESS':
-      return state.mergeDeep(action.payload.data)
+      return state.merge(action.payload.data)
     case 'GET_CUSTOMER_SUCCESS':
       tmp   = state.getIn(['result', 'customers']).indexOf(data.result.customers[0])
       // Don't add twice the same customer
       if (tmp !== -1) return state
-      return state.mergeDeep(action.payload.data)
+      return state.merge(action.payload.data)
     case 'NEW_CUSTOMER_SUCCESS':
-      state = state.updateIn(['result', 'customers'], list => {
-        return list.push(data.result.customers[0])
-      })
-      state = state.mergeDeepIn(['entities', 'customers'], data.entities.customers)
+      state = state.result.customers.push(data.result.customers[0])
+      state = state.mergeIn(['entities', 'customers'], data.entities.customers)
       return state
     case 'REMOVE_CUSTOMER_SUCCESS':
-      tmp   = state.getIn(['result', 'customers']).indexOf(data.result.customers[0])
+      tmp   = state.result.customers.indexOf(data.result.customers[0])
       state = state.deleteIn(['result', 'customers', tmp])
       state = state.deleteIn(['entities', 'customers', data.result.customers[0]] )
       return state

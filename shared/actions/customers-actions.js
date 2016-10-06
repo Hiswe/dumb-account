@@ -49,7 +49,6 @@ export function remove(id) {
   }
 }
 
-
 export function update(id, data) {
   return {
     type:       'UPDATE_CUSTOMER',

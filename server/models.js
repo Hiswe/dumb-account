@@ -78,7 +78,6 @@ QuotationSchema.plugin(autoIncrement.plugin, { model: QuotationModel, field: 'co
 const CustomerSchema  = Schema({
   name: {
     type:     String,
-    unique:   true,
     required: [true, 'Customer name is required'],
   },
   address: {
