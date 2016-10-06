@@ -4,18 +4,26 @@ import { connect }  from 'react-redux'
 
 import * as quotationsActions from '../actions/quotations-actions'
 
+// const QuotationsList = (props) => {
+//   return (
+//     <div>
+//       <h1>Quotations</h1>
+//       <Link to="/quotation">new quotation</Link>
+//       <QuotationList {...props}/>
+//     </div>
+//   )
+// }
+// QuotationsList.actionsNeeded = [
+//   quotationsActions.list,
+// ]
+
 const QuotationsList = (props) => {
   return (
     <div>
       <h1>Quotations</h1>
-      <Link to="/quotation">new quotation</Link>
-      <QuotationList {...props}/>
     </div>
   )
 }
-QuotationsList.actionsNeeded = [
-  quotationsActions.list,
-]
 
 const QuotationList = (props) => {
   const {quotationsId, quotations} = props

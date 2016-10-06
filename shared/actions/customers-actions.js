@@ -13,6 +13,7 @@ export function list() {
 
 // url params are passed to fetchComponentData on the front & backend
 export function show(params) {
+  if (!params.customerId) return { type: 'NONE', }
   return {
     type: 'GET_CUSTOMER',
     payload: {

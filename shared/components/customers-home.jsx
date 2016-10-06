@@ -4,42 +4,18 @@ import { connect }  from 'react-redux'
 
 import * as customersActions from '../actions/customers-actions'
 
-let Customers = React.createClass({
-  statics: {
-    actionsNeeded: [
-      customersActions.list,
-    ],
-  },
-  handleSubmit: function (e) {
-    e.preventDefault()
-    let node = this.refs['customer-name']
-    this.props.dispatch(customersActions.add({
-      name: node.value,
-    }))
-    node.value = ''
-  },
-  // Don't put an arrow function… we want to keep track of `this`
-  render: function() {
-    return (
-      <div>
-        <h1>Customers</h1>
-        <form method="post" action="/customer" onSubmit={this.handleSubmit}>
-          <input name="name" ref="customer-name"/>
-          <button type="submit">Add new</button>
-        </form>
-        <CustomerList />
-      </div>
-    )
-  }
-})
-
-// connect to have access to dispatch
-// TODO use bindActionCreators
-// http://redux.js.org/docs/api/bindActionCreators.html
-Customers = connect(
-  state => ({ customers:  state.customers, })
-)(Customers)
-
+const CustomersList = (props) => {
+  return (
+    <div>
+      <h1>Customers</h1>
+      <Link to="/customer">new customer</Link>
+      <CustomerList {...props}/>
+    </div>
+  )
+}
+CustomersList.actionsNeeded = [
+  customersActions.list,
+]
 
 // in ES6 destructuring can be done on the params…
 const CustomerRow = function ({customer, onRemove}) {
@@ -74,10 +50,13 @@ let CustomerList = function (props) {
   )
 }
 
+//////
+// CONTAINERS
+//////
+
 // map state properties to props…
 // …this is where our components will have their infos
-function mapStateToProp(state) {
-  // Immutable make use of accessors
+const mapStateToProps = (state, ownProps) => {
   return {
     customersId:  state.getIn(['result', 'customers']),
     customers:    state.getIn(['entities', 'customers']),
@@ -86,15 +65,13 @@ function mapStateToProp(state) {
 
 // map dispatch properties to props…
 // …this is where we can react to user interactions
-function mapDispatchToProp(dispatch, ownProps) {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onRemoveClick: (id) => {
       dispatch(customersActions.remove(id))
-    }
+    },
   }
 }
-// a precious example of what is it to separate view components and states
-// http://redux.js.org/docs/basics/ExampleTodoList.html
-CustomerList = connect(mapStateToProp, mapDispatchToProp)(CustomerList)
 
-export { Customers as default }
+const Customers = connect(mapStateToProps, mapDispatchToProps)(CustomersList)
+export default Customers
