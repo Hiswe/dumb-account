@@ -23,14 +23,14 @@ api
 // this will also benefit to redux and immutable datas
 // normalizr will unest object and build indexes. Format look like this:
 // {
-//   entities: {
+//   result: {
 //     A: [/* array of A ids */],
 //     B: [/* array of B ids */],
-//   },
-//   result: {
-//     A: { /* ids: values */ },
-//     B: { /* ids: values */ },
 //   }
+//   entities: {
+//     A: { /* A ids: values */ },
+//     B: { /* B ids: values */ },
+//   },
 // }
 // see more on https://www.npmjs.com/package/normalizr#the-problem
 
