@@ -1,62 +1,61 @@
 import React, { Component, PropTypes } from 'react'
 import { connect }  from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm } from 'redux-form/immutable'
 
 import * as quotationsActions from '../actions/quotations-actions'
 import * as customersActions from '../actions/customers-actions'
 
-const QuotationForm = React.createClass({
-  statics: {
-    actionsNeeded: [
-      quotationsActions.show,
-      customersActions.list,
-    ],
-  },
-  handleSubmit: function (e) {
-    // e.preventDefault()
-    // const {customer}  = this.props
-    // const name = this.refs['customer-name'].value
-    // const address = this.refs['customer-address'].value
-    // this.props.dispatchSubmit(customer.get('_id'), {
-    //   name,
-    //   address,
-    // })
-  },
-  render: function () {
-    const {quotation} = this.props
-    const postRoute   = quotation ? `/quotation/${quotation.get('_id')}` : `/quotation`
-    const btnMessage  = quotation ? `update` : `create`
-    return (
-      <form method="post" action={postRoute} onSubmit={this.handleSubmit}>
-        <h1>New Quotation</h1>
-        <label htmlFor="name">name</label>
-        <br/>
-        <input id="name" ref="quotation-name" name="name" defaultValue={quotation ? quotation.get('name') : ''}/>
-        <br/>
-        <button type="submit">{btnMessage}</button>
-      </form>
-    )
-  },
-})
+const QuotationBareForm = props => {
+  const { handleSubmit, load, pristine, reset, submitting, dispatchSubmit } = props
+  return (
+    <form onSubmit={handleSubmit(dispatchSubmit)}>
+      <div>
+        <label>Name</label>
+        <div>
+          <Field name="name" component="input" type="text" placeholder="Name"/>
+        </div>
+      </div>
+      <div>
+        <button type="submit" disabled={pristine || submitting}>Submit</button>
+        <button type="button" disabled={pristine || submitting} onClick={reset}>Undo Changes</button>
+      </div>
+    </form>
+  )
+}
 
 //////
 // CONTAINERS
 //////
 
+const QuotationForm = reduxForm({
+  form: 'quotationForm',
+})(QuotationBareForm)
+
 const mapStateToProps = (state, ownProps) => {
   const {quotationId} = ownProps.params
-  if (!quotationId) return {}
+  if (!quotationId) return {
+    initialValues: {},
+  }
+  // console.log('quotationId', state.getIn(['entities', 'quotations', quotationId]).toJS())
   return {
-    quotation: state.getIn(['entities', 'quotations', quotationId])
+    initialValues: state.getIn(['entities', 'quotations', quotationId])
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    // dispatchSubmit: (id, data) => dispatch(quotationsActions.update(id, data))
+    dispatchSubmit: (values) => {
+      values = values.toJS()
+      dispatch(quotationsActions[values._id ? 'update' : 'add' ](values))
+    }
   }
 }
 
-const Customer = connect(mapStateToProps, mapDispatchToProps)(QuotationForm)
+const Quotation = connect(mapStateToProps, mapDispatchToProps)(QuotationForm)
 
-export default Customer
+Quotation.actionsNeeded = [
+  quotationsActions.show,
+  customersActions.list,
+]
+
+export default Quotation

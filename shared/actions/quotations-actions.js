@@ -21,3 +21,42 @@ export function show(params) {
     },
   }
 }
+
+
+export function add(data) {
+  return {
+    type:       'NEW_QUOTATION',
+    payload: {
+      request: {
+        method: 'post',
+        url:    '/quotation',
+        data,
+      },
+    },
+  }
+}
+
+export function remove(id) {
+  return {
+    type:       'REMOVE_QUOTATION',
+    payload: {
+      request: {
+        method: 'delete',
+        url:    `/quotation/${id}`,
+      },
+    },
+  }
+}
+
+export function update(data) {
+  return {
+    type:       'UPDATE_QUOTATION',
+    payload: {
+      request: {
+        method: 'post',
+        url:    `/quotation/${data._id}`,
+        data,
+      },
+    },
+  }
+}

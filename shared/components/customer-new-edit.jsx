@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect }  from 'react-redux'
+import { Field, reduxForm } from 'redux-form/immutable'
 
 import * as customersActions from '../actions/customers-actions'
-import { Field, reduxForm } from 'redux-form/immutable'
 
 const CustomerBareForm = props => {
   const { handleSubmit, load, pristine, reset, submitting, dispatchSubmit } = props
@@ -28,6 +28,10 @@ const CustomerBareForm = props => {
   )
 }
 
+//////
+// CONTAINERS
+//////
+
 // Decorate with reduxForm(). It will read the initialValues prop provided by connect()
 const CustomerForm = reduxForm({
   form:     'customerForm',  // a unique identifier for this form
@@ -35,10 +39,6 @@ const CustomerForm = reduxForm({
   // We want to have access to redux's dispatch
   // onSubmit: data => { },
 })(CustomerBareForm)
-
-//////
-// CONTAINERS
-//////
 
 const mapStateToProps = (state, ownProps) => {
   const {customerId} = ownProps.params
@@ -54,13 +54,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     dispatchSubmit: (values) => {
       values = values.toJS()
-      console.log(values)
       dispatch(customersActions[values._id ? 'update' : 'add' ](values))
     }
   }
 }
 
 const Customer = connect(mapStateToProps, mapDispatchToProps)(CustomerForm)
+
 Customer.actionsNeeded = [
   customersActions.show,
 ]

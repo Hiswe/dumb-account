@@ -57,5 +57,5 @@ export default combinedReduction(
     form: formReducer,
   },
   customersReducers,
-  // quotationsReducers,
+  quotationsReducers,
 )
