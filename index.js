@@ -1,3 +1,5 @@
+if (!/^6\./.test(process.versions.node)) throw new Error('wrong node version. Should run on nodejs 6. See package.json#engines')
+
 // use babel for ES2015 import & JSX
 require('babel-core/register')({
   presets: ['react'],

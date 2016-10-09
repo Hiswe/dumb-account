@@ -49,13 +49,13 @@ export function remove(id) {
   }
 }
 
-export function update(id, data) {
+export function update(data) {
   return {
     type:       'UPDATE_CUSTOMER',
     payload: {
       request: {
         method: 'post',
-        url:    `/customer/${id}`,
+        url:    `/customer/${data._id}`,
         data,
       },
     },

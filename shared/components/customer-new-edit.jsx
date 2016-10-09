@@ -2,42 +2,39 @@ import React, { Component, PropTypes } from 'react'
 import { connect }  from 'react-redux'
 
 import * as customersActions from '../actions/customers-actions'
+import { Field, reduxForm } from 'redux-form/immutable'
 
-class CustomerForm extends Component {
-
-  static actionsNeeded = [
-    customersActions.show,
-  ]
-
-  handleSubmit(e) {
-    // e.preventDefault()
-    // const {customer}  = this.props
-    // const name = this.refs['customer-name'].value
-    // const address = this.refs['customer-address'].value
-    // this.props.dispatchSubmit(customer.get('_id'), {
-    //   name,
-    //   address,
-    // })
-  }
-
-  render() {
-    const {customer}  = this.props
-    const postRoute   = customer ? `/customer/${customer.get('_id')}` : `/customer`
-    return (
-      <form method="post" action={postRoute} onSubmit={this.handleSubmit}>
-        <label htmlFor="name">name</label>
-        <br/>
-        <input id="name" ref="customer-name" name="name" defaultValue={customer ? customer.get('name') : ''}/>
-        <br/>
-        <label htmlFor="address">address</label>
-        <br/>
-        <textarea id="address" ref="customer-address" defaultValue={customer ? customer.get('address') : ''} name="address" />
-        <br/>
-        <button type="submit">update</button>
-      </form>
-    )
-  }
+const CustomerBareForm = props => {
+  const { handleSubmit, load, pristine, reset, submitting, dispatchSubmit } = props
+  return (
+    <form onSubmit={handleSubmit(dispatchSubmit)}>
+      <div>
+        <label>First Name</label>
+        <div>
+          <Field name="name" component="input" type="text" placeholder="Full Name"/>
+        </div>
+      </div>
+      <div>
+        <label>Address</label>
+        <div>
+          <Field name="address" component="textarea" placeholder="address"/>
+        </div>
+      </div>
+      <div>
+        <button type="submit" disabled={pristine || submitting}>Submit</button>
+        <button type="button" disabled={pristine || submitting} onClick={reset}>Undo Changes</button>
+      </div>
+    </form>
+  )
 }
+
+// Decorate with reduxForm(). It will read the initialValues prop provided by connect()
+const CustomerForm = reduxForm({
+  form:     'customerForm',  // a unique identifier for this form
+  // Don't use onSubmit function
+  // We want to have access to redux's dispatch
+  // onSubmit: data => { },
+})(CustomerBareForm)
 
 //////
 // CONTAINERS
@@ -45,18 +42,27 @@ class CustomerForm extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const {customerId} = ownProps.params
-  if (!customerId) return {}
+  if (!customerId) return {
+    initialValues: {}
+  }
   return {
-    customer: state.getIn(['entities', 'customers', customerId])
+    initialValues: state.getIn(['entities', 'customers', customerId])
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    dispatchSubmit: (id, data) => dispatch(customersActions.update(id, data))
+    dispatchSubmit: (values) => {
+      values = values.toJS()
+      console.log(values)
+      dispatch(customersActions[values._id ? 'update' : 'add' ](values))
+    }
   }
 }
 
 const Customer = connect(mapStateToProps, mapDispatchToProps)(CustomerForm)
+Customer.actionsNeeded = [
+  customersActions.show,
+]
 
 export default Customer

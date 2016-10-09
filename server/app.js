@@ -20,7 +20,7 @@ import axios from 'axios'
 import axiosMiddleware from 'redux-axios-middleware'
 // redux handle immutable state…
 // …add a lib to help not messing with object mutations
-import crio from 'crio'
+import Immutable from 'immutable'
 
 import config from './config'
 import {default as reactRoutes, fetchComponentData} from '../shared/react-routes'
@@ -149,7 +149,7 @@ export default () => {
     // Define a coherent empty state
     // Make it immutable as reducers will apply to this store…
     // …and the need immutables methods to update store!
-    const emptyState = crio({
+    const emptyState = Immutable.fromJS({
       entities: {
         quotations: {},
         customers:  {},
@@ -184,7 +184,7 @@ export default () => {
         // Redux store should be up date to that at this time
         // we can safely get current sate
         // needed for not putting functions in HTML body
-        const initialState = store.getState().thaw()
+        const initialState = store.getState().toJS()
         // use jade to render all wrapping markup
         return res.render('_layout', {
           dom: renderToString(
