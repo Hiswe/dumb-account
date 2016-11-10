@@ -5,6 +5,7 @@ This is an attempt to do a so called “universal app” with *Express + React +
 ## Prerequisite
 
 - [NodeJS 6](https://nodejs.org/en/)
+- [MongoDB](https://www.mongodb.com/)
 
 After each updates, don't forget to do a `npm install`
 
