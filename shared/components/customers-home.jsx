@@ -13,9 +13,6 @@ const CustomersList = (props) => {
     </div>
   )
 }
-CustomersList.actionsNeeded = [
-  customersActions.list,
-]
 
 // in ES6 destructuring can be done on the params…
 const CustomerRow = function ({customer, onRemove}) {
@@ -38,9 +35,9 @@ let CustomerList = function (props) {
   const {customersId, customers, onRemoveClick} = props
   let body = customersId.map( (customerId, i) => (
     <CustomerRow
-      key={customerId}
-      customer={customers.get(customerId)}
-      onRemove={() => onRemoveClick(customerId)}
+      key={ customerId }
+      customer={ customers.get(customerId) }
+      onRemove={ _ => onRemoveClick(customerId)}
     />
   ))
   return (
@@ -74,4 +71,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 const Customers = connect(mapStateToProps, mapDispatchToProps)(CustomersList)
+
+Customers.actionsNeeded = [
+  customersActions.list,
+]
+
 export default Customers
