@@ -85,8 +85,6 @@ const CustomerSchema  = Schema({
   }
 }, { timestamps: true })
 
-CustomerSchema.plugin(autoIncrement.plugin, { model: CustomerModel, field: 'count' })
-
 //////
 // COMPILE SCHEMAS
 //////

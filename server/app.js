@@ -8,12 +8,13 @@ import compression from 'compression'
 import morgan from 'morgan'
 import favicon from 'serve-favicon'
 import createError from 'http-errors'
+import omit from 'lodash.omit'
 // React
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { RouterContext, match } from 'react-router'
 // Redux
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import createLogger from 'redux-logger'
 import axios from 'axios'
@@ -29,8 +30,6 @@ import reducers from '../shared/reducers'
 
 export default () => {
 
-  console.log(util.inspect(config))
-
   //////
   // SERVER CONFIG
   //////
@@ -45,6 +44,8 @@ export default () => {
     limit: '5mb',
     extended: true,
   }))
+  app.locals._config  = omit(config, ['_', 'configs', 'config'])
+  console.log(util.inspect(app.locals._config))
   // enable other methods from request (PUT, DELETE…)
   app.use(methodOverride('_method', {methods: ['GET', 'POST']}))
   app.use(compression())
